@@ -14,20 +14,22 @@ async function query(queryObject) {
 }
 
 async function getDatabaseInfo() {
-  const { rows: {0: databaseInfo} } = await query({
+  const {
+    rows: { 0: databaseInfo },
+  } = await query({
     text: `
       SELECT 
         (SELECT setting FROM pg_settings WHERE name = 'server_version') AS version,
         (SELECT setting::int FROM pg_settings WHERE name = 'max_connections') AS max_connections,
         (SELECT COUNT(*)::int FROM pg_stat_activity WHERE datname = $1) AS opened_connections;
     `,
-    values: [process.env.POSTGRES_DB]
-  })
+    values: [process.env.POSTGRES_DB],
+  });
   return {
     version: databaseInfo.version,
     maxConnections: databaseInfo.max_connections,
     openedConnections: databaseInfo.opened_connections,
-  }
+  };
 }
 
 async function getNewClient() {
@@ -37,9 +39,9 @@ async function getNewClient() {
     user: process.env.POSTGRES_USER,
     database: process.env.POSTGRES_DB,
     password: process.env.POSTGRES_PASSWORD,
-    ssl: process.env.NODE_ENV === 'production'
+    ssl: process.env.NODE_ENV === "production",
   });
-  
+
   await client.connect();
   return client;
 }
@@ -47,5 +49,5 @@ async function getNewClient() {
 export default {
   query,
   getDatabaseInfo,
-  getNewClient
+  getNewClient,
 };

@@ -10,11 +10,10 @@ async function status(request, response) {
       database: {
         version: databaseInfo.version,
         max_connections: databaseInfo.maxConnections,
-        opened_connections: databaseInfo.openedConnections
-      }
-    }
+        opened_connections: databaseInfo.openedConnections,
+      },
+    },
   });
 }
 
 export default status;
- 
