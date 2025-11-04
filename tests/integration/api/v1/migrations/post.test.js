@@ -31,7 +31,7 @@ async function checkMigrationTableExistence() {
 beforeEach(async () => {
   await cleanDatabase();
   const isMigrationTableAvailable = await checkMigrationTableExistence();
-  expect(isMigrationTableAvailable).toBeFalsy();
+  if (!isMigrationTableAvailable) throw Error("Migration table not available.");
 });
 
 test("POST to /api/v1/migrations should return 201 if any migrations were executed", async () => {
