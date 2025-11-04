@@ -1,8 +1,4 @@
 {
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "always",
-    "source.fixAll.eslint": "always"
-  },
   "editor.formatOnSave": true,
   "editor.defaultFormatter": "esbenp.prettier-vscode" // ATENÇÃO: Requer que o plugin esteja instalado: https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
 }
