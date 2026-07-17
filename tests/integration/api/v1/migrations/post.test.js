@@ -23,7 +23,7 @@ async function checkMigrationTableExistence() {
       0: { exists: isMigrationTableAvailable },
     },
   } = await database.query(
-    "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'pgmigrations');"
+    "SELECT EXISTS (SELECT FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'pgmigrations');",
   );
   return isMigrationTableAvailable;
 }
@@ -33,7 +33,7 @@ beforeEach(async () => {
   const isMigrationTableAvailable = await checkMigrationTableExistence();
   if (isMigrationTableAvailable)
     throw Error(
-      "Migration table shouldn't be available. Check the database clean up logic."
+      "Migration table shouldn't be available. Check the database clean up logic.",
     );
 });
 
@@ -80,7 +80,7 @@ test("POST to /api/v1/migrations should execute migrations", async () => {
   expect(isMigrationTableAvailable).toBeTruthy();
 
   const { rows: migrations } = await database.query(
-    "SELECT * FROM pgmigrations"
+    "SELECT * FROM pgmigrations",
   );
 
   /** We expect the number of executed migrations to equal the number of migration files because we're always
@@ -93,7 +93,7 @@ test("POST to /api/v1/migrations should execute migrations", async () => {
         id: expect.any(Number),
         name: expect.any(String),
         run_on: expect.any(Date),
-      })
+      }),
     );
   }
 });
@@ -105,7 +105,7 @@ test("POST to /api/v1/migrations should NOT execute migrations more than once", 
     "http://localhost:3000/api/v1/migrations",
     {
       method: "POST",
-    }
+    },
   );
 
   const firstPostData = await firstPostResponse.json();
@@ -115,7 +115,7 @@ test("POST to /api/v1/migrations should NOT execute migrations more than once", 
   expect(isMigrationTableAvailable).toBeTruthy();
 
   const { rows: migrationsFromFirstQuery } = await database.query(
-    "SELECT * FROM pgmigrations"
+    "SELECT * FROM pgmigrations",
   );
 
   /** We expect the number of executed migrations to equal the number of migration files because we're always
@@ -128,7 +128,7 @@ test("POST to /api/v1/migrations should NOT execute migrations more than once", 
         id: expect.any(Number),
         name: expect.any(String),
         run_on: expect.any(Date),
-      })
+      }),
     );
   }
 
@@ -137,17 +137,17 @@ test("POST to /api/v1/migrations should NOT execute migrations more than once", 
     "http://localhost:3000/api/v1/migrations",
     {
       method: "POST",
-    }
+    },
   );
 
   const secondPostData = await secondPostResponse.json();
   expect(secondPostData.length).toEqual(0);
 
   const { rows: migrationsFromSecondQuery } = await database.query(
-    "SELECT * FROM pgmigrations"
+    "SELECT * FROM pgmigrations",
   );
   expect(migrationsFromSecondQuery.length).toEqual(
-    migrationsFromFirstQuery.length
+    migrationsFromFirstQuery.length,
   );
 
   // Ensure that executed migrations didn't change between the first and second queries
@@ -155,12 +155,12 @@ test("POST to /api/v1/migrations should NOT execute migrations more than once", 
     migrationsFromSecondQuery.every((migrationFromSecondQuery) => {
       const equivalentMigrationFromFirstQuery = migrationsFromFirstQuery.find(
         (migrationFromFirstQuery) =>
-          migrationFromFirstQuery.id === migrationFromSecondQuery.id
+          migrationFromFirstQuery.id === migrationFromSecondQuery.id,
       );
       return (
         equivalentMigrationFromFirstQuery.run_on.getTime() ===
         migrationFromSecondQuery.run_on.getTime()
       );
-    })
+    }),
   ).toBeTruthy();
 });
